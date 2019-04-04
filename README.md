@@ -8,7 +8,7 @@ This is a project to implement the game logic for the classic game
 Install, then from this directory:
 
 ```sh
-# install node_modules folder
+# install node_modules
 npm install
 
 # run the test suite
