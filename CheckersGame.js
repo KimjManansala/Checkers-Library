@@ -1,3 +1,7 @@
+function deepCopy(x) {
+  return JSON.parse(JSON.stringify(x));
+}
+
 // What an initial checkers game board should look like
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const NewGameboard = [
@@ -14,24 +18,45 @@ const NewGameboard = [
 // CREATES A NEW GAME
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function createNewGame() {
-  // Returns NewGameBoard
-  return NewGameboard;
+  return [
+    ["red", null, "red", null, "red", null, "red", null],
+    [null, "red", null, "red", null, "red", null, "red"],
+    ["red", null, "red", null, "red", null, "red", null],
+    [null, "empty", null, "empty", null, "empty", null, "empty"],
+    ["empty", null, "empty", null, "empty", null, "empty", null],
+    [null, "black", null, "black", null, "black", null, "black"],
+    ["black", null, "black", null, "black", null, "black", null],
+    [null, "black", null, "black", null, "black", null, "black"]
+  ];
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // CHECKS FOR IF BOARD HAS VALID AMOUNTS OF EMPTY SQUARES
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function validBoard(board) {
+function validNullSquares(board) {
   // SHOULD HAVE 32 NULL SQUARES
   let num = 0;
   board.forEach(row => {
     row.forEach(square => {
       if (square === null) {
-        console.log(square);
         num++;
       }
     });
   });
   return num;
+}
+function validBoard(board) {
+  if (validNullSquares(board) !== 32) {
+    return false;
+  }
+  if (board.length !== 8) {
+    return false;
+  }
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i].length !== 8) return false;
+    }
+  }
+  return true;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // CHECKS IF POSSIBLE IS ON BOARD
@@ -47,7 +72,8 @@ function ifPossibleShown(board) {
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // FUNCTION TO RETURN BOARD WITH POSSIBLE MOVES TO SELECTED PIECE
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function selectPieceToMove(board, playerTurn, pieceRow, pieceCol) {
+function selectPieceToMove(oldboard, playerTurn, pieceRow, pieceCol) {
+  let board = deepCopy(oldboard);
   if (ifPossibleShown(board)) return false;
   if (playerTurn === "black") {
     if (board[pieceRow][pieceCol] === "black")
@@ -59,6 +85,9 @@ function selectPieceToMove(board, playerTurn, pieceRow, pieceCol) {
       pieceMove(board, pieceRow, pieceCol, 1, "red");
     else if (board[pieceRow][pieceCol] === "redking")
       kingPieceMove(board, pieceRow, pieceCol), "red";
+  }
+  if (validBoard(board) === false) {
+    return false;
   }
   return board;
 }
@@ -118,12 +147,12 @@ function getOg(board) {
         board[i][j] === "blackmoving" ||
         board[i][j] === "blackkingmoving"
       ) {
-        console.log("");
         return {
           row: i,
           col: j,
           pieceName: board[i][j].substring(0, board[i][j].indexOf("moving"))
         };
+      } else {
       }
     }
   }
@@ -132,30 +161,33 @@ function capturePiece(board, row, col, currentPlayer) {
   let ogPiece = getOg(board);
   let pieceToMove = ogPiece.pieceName;
   if (ogPiece.row - row === -2) {
-    getCol(board, row + 1, col, ogPiece.col);
+    getCol(board, row - 1, col, ogPiece.col, ogPiece);
   } else if (ogPiece.row - row === 2) {
-    getCol(board, row - 1, col, ogPiece.col);
+    getCol(board, row + 1, col, ogPiece.col, ogPiece);
   }
 }
-function getCol(board, row, col, ogCol) {
+function getCol(board, row, col, ogCol, ogObj) {
   if (ogCol - col === 2) {
-    board[row][col - 1] === "empty";
+    board[row][col + 1] = "empty";
   } else if (ogCol - col === -2) {
-    board[row][col + 1] === "empty";
+    board[row][col - 1] = "empty";
   }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Multi Capture
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+function multiCapture(board) {}
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // MOVE TO POSSIBLE
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function moveToHighLight(board, row, col) {
+function moveToHighLight(oldBoard, row, col) {
+  let board = deepCopy(oldBoard);
   if (board[row][col] === "possible") {
-    capturePiece(board, row, col);
     let ogPiece = getOg(board);
+
+    capturePiece(board, row, col);
+
     board[ogPiece.row][ogPiece.col] = "empty";
     if (row === 0 && ogPiece.pieceName === "black") {
       board[row][col] = "blackking";
@@ -164,7 +196,19 @@ function moveToHighLight(board, row, col) {
     } else {
       board[row][col] = ogPiece.pieceName;
     }
+    removePossible(board);
+    return board;
+  } else {
+    return board;
   }
+}
+function removePossible(board) {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] === "possible") board[i][j] = "empty";
+    }
+  }
+  return board;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // CHECK PLAYERS
@@ -213,6 +257,34 @@ function checkValidAmount(board) {
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-let movingBoard = selectPieceToMove(NewGameboard, "black", 5, 1);
-console.log(movingBoard);
-console.log(getOg(movingBoard));
+module.exports = {
+  createNewGame: createNewGame,
+  validBoard: validBoard,
+  selectPieceToMove: selectPieceToMove,
+  moveToHighLight: moveToHighLight,
+  checkRedWinner: checkRedWinner,
+  checkBlackWinner: checkBlackWinner,
+  checkValidAmount: checkValidAmount
+};
+
+// console.log(pieceMove(createNewGame(), 5, 1, -1, 'black'))
+// let movingBoard = selectPieceToMove(NewGameboard, "red", 2, 0);
+// console.log(movingBoard);
+// console.log(getOg(movingBoard));
+// console.log(validBoard(NewGameboard))
+console.log(
+  moveToHighLight(
+    [
+      ["red", null, "red", null, "red", null, "red", null],
+      [null, "red", null, "red", null, "red", null, "red"],
+      ["red", null, "red", null, "possible", null, "red", null],
+      [null, "possible", null, "red", null, "empty", null, "empty"],
+      ["empty", null, "blackmoving", null, "empty", null, "black", null],
+      [null, "empty", null, "black", null, "black", null, "empty"],
+      ["black", null, "black", null, "black", null, "black", null],
+      [null, "black", null, "black", null, "black", null, "black"]
+    ],
+    2,
+    4
+  )
+);
