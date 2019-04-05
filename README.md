@@ -1,5 +1,6 @@
 # Checkers Library
 
+<a href='https://travis-ci.org/KimjManansala/Checkers-Library/'><img href='https://travis-ci.org/KimjManansala/Checkers-Library.svg?branch=master'></a>
 
 This is a project to implement the game logic for the classic game
 [Checkers]
