@@ -131,8 +131,14 @@ function checkPieceCapture(board, rowMove, colMove, row, col, currentPlayer) {
   let capturePiece1 = currentPlayer === "black" ? "red" : "black";
   let capturePiece2 = currentPlayer === "black" ? "redking" : "blackking";
   if (board[row][col] === capturePiece1 || board[row][col] === capturePiece2) {
-    if (board[row + rowMove][col + colMove] === "empty")
+    if (board[row + rowMove][col + colMove] === "empty") {
       board[row + rowMove][col + colMove] = "possible";
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
   }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -159,24 +165,66 @@ function getOg(board) {
 }
 function capturePiece(board, row, col, currentPlayer) {
   let ogPiece = getOg(board);
-  let pieceToMove = ogPiece.pieceName;
+  //   let pieceToMove = ogPiece.pieceName;
   if (ogPiece.row - row === -2) {
-    getCol(board, row - 1, col, ogPiece.col, ogPiece);
+    return getCol(board, row - 1, col, ogPiece.col, ogPiece);
   } else if (ogPiece.row - row === 2) {
-    getCol(board, row + 1, col, ogPiece.col, ogPiece);
+    return getCol(board, row + 1, col, ogPiece.col, ogPiece);
   }
 }
 function getCol(board, row, col, ogCol, ogObj) {
   if (ogCol - col === 2) {
     board[row][col + 1] = "empty";
+    return true;
   } else if (ogCol - col === -2) {
     board[row][col - 1] = "empty";
+    return true;
   }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Multi Capture
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function multiCapture(board) {}
+function multiCapture(board, row, col) {
+  let check1, check2, check3, check4;
+  let currentPlayer = "";
+  if (board[row][col] === "red" || board[row][col] === "redking") {
+    currentPlayer = "red";
+  } else {
+    currentPlayer = "black";
+  }
+  if (board[row + 1]) {
+    if (board[row + 1][col + 1] === "empty") null;
+    else {
+      check1 = checkPieceCapture(board, 1, 1, row + 1, col + 1, currentPlayer);
+    }
+    if (board[row + 1][col - 1] === "empty") null;
+    else {
+      check2 = checkPieceCapture(board, 1, -1, row + 1, col - 1, currentPlayer);
+    }
+  }
+  if (board[row - 1]) {
+    if (board[row - 1][col + 1] === "empty") null;
+    else {
+      check3 = checkPieceCapture(board, -1, 1, row - 1, col + 1, currentPlayer);
+    }
+    if (board[row - 1][col - 1] === "empty") null;
+    else {
+      check4 = checkPieceCapture(
+        board,
+        -1,
+        -1,
+        row - 1,
+        col - 1,
+        currentPlayer
+      );
+    }
+  }
+  if (check1 || check2 || check3 || check4) {
+    board[row][col] = board[row][col] + "moving";
+  } else {
+    
+  }
+}
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // MOVE TO POSSIBLE
@@ -185,10 +233,8 @@ function moveToHighLight(oldBoard, row, col) {
   let board = deepCopy(oldBoard);
   if (board[row][col] === "possible") {
     let ogPiece = getOg(board);
+    let bool = capturePiece(board, row, col);
 
-    capturePiece(board, row, col);
-
-    board[ogPiece.row][ogPiece.col] = "empty";
     if (row === 0 && ogPiece.pieceName === "black") {
       board[row][col] = "blackking";
     } else if (row === 7 && ogPiece.pieceName === "red") {
@@ -196,7 +242,12 @@ function moveToHighLight(oldBoard, row, col) {
     } else {
       board[row][col] = ogPiece.pieceName;
     }
+    board[ogPiece.row][ogPiece.col] = "empty";
     removePossible(board);
+
+    if (bool) {
+      multiCapture(board, row, col);
+    }
     return board;
   } else {
     return board;
@@ -267,24 +318,20 @@ module.exports = {
   checkValidAmount: checkValidAmount
 };
 
-// console.log(pieceMove(createNewGame(), 5, 1, -1, 'black'))
-// let movingBoard = selectPieceToMove(NewGameboard, "red", 2, 0);
-// console.log(movingBoard);
-// console.log(getOg(movingBoard));
-// console.log(validBoard(NewGameboard))
-console.log(
-  moveToHighLight(
-    [
-      ["red", null, "red", null, "red", null, "red", null],
-      [null, "red", null, "red", null, "red", null, "red"],
-      ["red", null, "red", null, "possible", null, "red", null],
-      [null, "possible", null, "red", null, "empty", null, "empty"],
-      ["empty", null, "blackmoving", null, "empty", null, "black", null],
-      [null, "empty", null, "black", null, "black", null, "empty"],
-      ["black", null, "black", null, "black", null, "black", null],
-      [null, "black", null, "black", null, "black", null, "black"]
-    ],
-    2,
-    4
-  )
-);
+blackCapture = [
+  ["red", null, "empty", null, "red", null, "empty", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "possible", null, "red", null],
+  [null, "possible", null, "red", null, "red", null, "empty"],
+  ["empty", null, "blackmoving", null, "empty", null, "empty", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+let newBoard = moveToHighLight(blackCapture, 2, 4);
+
+// console.log(newBoard);
+// console.log("---------");
+// console.log(
+moveToHighLight(newBoard, 0, 2);
+// );

@@ -105,12 +105,45 @@ const redPosClick2 = [
   ["black", null, "black", null, "black", null, "black", null],
   [null, "black", null, "black", null, "black", null, "black"]
 ];
-
 // Red will capture 4-2 from 3-3
-const redCaptire = [
+const redCheckCapture = [
   ["red", null, "red", null, "red", null, "red", null],
   [null, "red", null, "red", null, "red", null, "red"],
   ["red", null, "red", null, "empy", null, "red", null],
+  [null, "empty", null, "red", null, "empty", null, "empty"],
+  ["empty", null, "black", null, "empty", null, "black", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+
+// Red will capture 4-2 from 3-3
+const redCapture = [
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "empy", null, "red", null],
+  [null, "empty", null, "redmoving", null, "empty", null, "empty"],
+  ["empty", null, "black", null, "possible", null, "black", null],
+  [null, "possible", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+
+const redDidCapture = [
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "empy", null, "red", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "black", null],
+  [null, "red", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+// CLICK 4-2
+const blackCheckCapture = [
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "empty", null, "red", null],
   [null, "empty", null, "red", null, "empty", null, "empty"],
   ["empty", null, "black", null, "empty", null, "black", null],
   [null, "empty", null, "black", null, "black", null, "empty"],
@@ -251,6 +284,9 @@ describe("#Player click piece", () => {
         blackMove2
       );
     });
+    it("Should be possible at 2-4 and 3-1 and blackmoving on 4-2 ", () => {
+      expect(checkers.selectPieceToMove(blackCheckCapture, "black", 4, 2));
+    });
   });
   context("Red Piece selecting to move", () => {
     it("Should be redmoving at 2-2 and possible 3-1 and 3-3", () => {
@@ -275,6 +311,9 @@ describe("#Player click piece", () => {
     it("Should be redmoving at 2-0, and possible at 3-1", () => {
       let game = newGameBoard;
       expect(checkers.selectPieceToMove(game, "red", 2, 0)).to.eql(redMove2);
+    });
+    it("should be possible at 5-1 and 4-4 and redmoving on 3-3", () => {
+      expect(checkers.selectPieceToMove(redCheckCapture, "red", 3, 3));
     });
   });
   it("Should be false if possible moves are present", () => {
@@ -304,8 +343,19 @@ describe("#Player selects possbile move", () => {
     });
   });
   context("Black piece will capture a red piece", () => {
-      it('Should capture 3-3 from 4-2 and be black at 2-4', ()=>{
-      expect(checkers.moveToHighLight(blackCapture, 2, 4)).to.eql(blackDidCapture)
-    })
+    it("Should capture 3-3 from 4-2 and be black at 2-4", () => {
+      expect(checkers.moveToHighLight(blackCapture, 2, 4)).to.eql(
+        blackDidCapture
+      );
+    });
+  });
+  context("Red piece will capture a black piece", () => {
+    it("Should capture 4-2 from 3-3 and be red at 5-1", () => {
+      expect(checkers.moveToHighLight(redCapture, 5, 1)).to.eql(redDidCapture);
+    });
   });
 });
+
+describe("#Players selects a possible double jump", ()=>{
+    
+})
