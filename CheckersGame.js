@@ -222,7 +222,7 @@ function multiCapture(board, row, col) {
   if (check1 || check2 || check3 || check4) {
     board[row][col] = board[row][col] + "moving";
   } else {
-    
+
   }
 }
 
@@ -329,9 +329,10 @@ blackCapture = [
   [null, "black", null, "black", null, "black", null, "black"]
 ];
 let newBoard = moveToHighLight(blackCapture, 2, 4);
-
+console.log(newBoard)
 // console.log(newBoard);
 // console.log("---------");
 // console.log(
-moveToHighLight(newBoard, 0, 2);
+let double = moveToHighLight(newBoard, 0, 2);
 // );
+console.log(double)

@@ -172,6 +172,39 @@ const blackDidCapture = [
   ["black", null, "black", null, "black", null, "black", null],
   [null, "black", null, "black", null, "black", null, "black"]
 ];
+// BEFORE DOUBLE JUMP 2-4
+const blackBeforeDouble = [
+  ["red", null, "empty", null, "red", null, "empty", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "possible", null, "red", null],
+  [null, "possible", null, "red", null, "red", null, "empty"],
+  ["empty", null, "blackmoving", null, "empty", null, "empty", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+// CAN DOUBLE JUMP
+const blackCheckDouble = [
+  ["red", null, "possible", null, "red", null, "possible", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "blackmoving", null, "red", null],
+  [null, "empty", null, "empty", null, "red", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "possible", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
+// DID DOUBLE JUMP
+const blackDidDouble = [
+  ["red", null, "blackking", null, "red", null, "empty", null],
+  [null, "red", null, "empty", null, "red", null, "red"],
+  ["red", null, "red", null, "empty", null, "red", null],
+  [null, "empty", null, "empty", null, "red", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+];
 
 // King black
 const blackKing = [
@@ -356,6 +389,15 @@ describe("#Player selects possbile move", () => {
   });
 });
 
-describe("#Players selects a possible double jump", ()=>{
-    
-})
+describe("#Players selects a possible double jump", () => {
+  context("Black piece will captured and check if can double jump", () => {
+    it("Should be black at 2-4", () => {
+      expect(checkers.moveToHighLight(blackBeforeDouble, 2, 4)).to.eql(
+        blackCheckDouble
+      );
+    });
+    it('Should now capture after double jump is determined', ()=>{
+        expect(checkers.moveToHighLight(blackCheckDouble, 0,2)).to.eql(blackDidDouble)
+    })
+  });
+});
