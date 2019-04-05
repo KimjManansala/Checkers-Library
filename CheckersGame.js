@@ -318,21 +318,3 @@ module.exports = {
   checkValidAmount: checkValidAmount
 };
 
-blackCapture = [
-  ["red", null, "empty", null, "red", null, "empty", null],
-  [null, "red", null, "red", null, "red", null, "red"],
-  ["red", null, "red", null, "possible", null, "red", null],
-  [null, "possible", null, "red", null, "red", null, "empty"],
-  ["empty", null, "blackmoving", null, "empty", null, "empty", null],
-  [null, "empty", null, "black", null, "black", null, "empty"],
-  ["black", null, "black", null, "black", null, "black", null],
-  [null, "black", null, "black", null, "black", null, "black"]
-];
-let newBoard = moveToHighLight(blackCapture, 2, 4);
-console.log(newBoard)
-// console.log(newBoard);
-// console.log("---------");
-// console.log(
-let double = moveToHighLight(newBoard, 0, 2);
-// );
-console.log(double)
