@@ -89,6 +89,7 @@ function selectPieceToMove(oldboard, playerTurn, pieceRow, pieceCol) {
   if (validBoard(board) === false) {
     return false;
   }
+
   return board;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -130,10 +131,17 @@ function kingPieceMove(board, row, col, currentPlayer) {
 function checkPieceCapture(board, rowMove, colMove, row, col, currentPlayer) {
   let capturePiece1 = currentPlayer === "black" ? "red" : "black";
   let capturePiece2 = currentPlayer === "black" ? "redking" : "blackking";
-  if (board[row][col] === capturePiece1 || board[row][col] === capturePiece2) {
-    if (board[row + rowMove][col + colMove] === "empty") {
-      board[row + rowMove][col + colMove] = "possible";
-      return true;
+  if (
+    board[row + rowMove][col + colMove] === capturePiece1 ||
+    board[row + rowMove][col + colMove] === capturePiece2
+  ) {
+    if (board[row + 2 * rowMove]) {
+      if (board[row + rowMove + rowMove][col + colMove + colMove] === "empty") {
+        board[row + rowMove + rowMove][col + colMove + colMove] = "possible";
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -195,41 +203,35 @@ function multiCapture(board, row, col) {
   if (board[row + 1]) {
     if (board[row + 1][col + 1] === "empty") null;
     else {
-      check1 = checkPieceCapture(board, 1, 1, row + 1, col + 1, currentPlayer);
+      check1 = checkPieceCapture(board, 1, 1, row , col, currentPlayer);
     }
     if (board[row + 1][col - 1] === "empty") null;
     else {
-      check2 = checkPieceCapture(board, 1, -1, row + 1, col - 1, currentPlayer);
+      check2 = checkPieceCapture(board, 1, -1, row, col , currentPlayer);
     }
   }
   if (board[row - 1]) {
     if (board[row - 1][col + 1] === "empty") null;
     else {
-      check3 = checkPieceCapture(board, -1, 1, row - 1, col + 1, currentPlayer);
+
+      check3 = checkPieceCapture(board, -1, 1, row, col, currentPlayer);
     }
     if (board[row - 1][col - 1] === "empty") null;
     else {
-      check4 = checkPieceCapture(
-        board,
-        -1,
-        -1,
-        row - 1,
-        col - 1,
-        currentPlayer
-      );
+
+      check4 = checkPieceCapture(board,-1,-1,row ,col,currentPlayer );
     }
   }
   if (check1 || check2 || check3 || check4) {
     board[row][col] = board[row][col] + "moving";
   } else {
-
   }
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // MOVE TO POSSIBLE
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function moveToHighLight(oldBoard, row, col) {
+function moveToPossible(oldBoard, row, col) {
   let board = deepCopy(oldBoard);
   if (board[row][col] === "possible") {
     let ogPiece = getOg(board);
@@ -244,7 +246,6 @@ function moveToHighLight(oldBoard, row, col) {
     }
     board[ogPiece.row][ogPiece.col] = "empty";
     removePossible(board);
-
     if (bool) {
       multiCapture(board, row, col);
     }
@@ -265,18 +266,6 @@ function removePossible(board) {
 // CHECK PLAYERS
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function checkRedWinner(board) {
-  let red = 0;
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] === "red" || board[i][j] === "redking") {
-        red++;
-      }
-    }
-  }
-  if (red === 0) return true;
-  else return false;
-}
-function checkBlackWinner(board) {
   let black = 0;
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
@@ -286,6 +275,18 @@ function checkBlackWinner(board) {
     }
   }
   if (black === 0) return true;
+  else return false;
+}
+function checkBlackWinner(board) {
+  let red = 0;
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] === "red" || board[i][j] === "redking") {
+        red++;
+      }
+    }
+  }
+  if (red === 0) return true;
   else return false;
 }
 function checkValidAmount(board) {
@@ -312,9 +313,8 @@ module.exports = {
   createNewGame: createNewGame,
   validBoard: validBoard,
   selectPieceToMove: selectPieceToMove,
-  moveToHighLight: moveToHighLight,
+  moveToPossible: moveToPossible,
   checkRedWinner: checkRedWinner,
   checkBlackWinner: checkBlackWinner,
   checkValidAmount: checkValidAmount
 };
-
