@@ -1,19 +1,5 @@
 function deepCopy(x) {
   return JSON.parse(JSON.stringify(x));
-}
-
-// What an initial checkers game board should look like
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-const NewGameboard = [
-  ["red", null, "red", null, "red", null, "red", null],
-  [null, "red", null, "red", null, "red", null, "red"],
-  ["red", null, "red", null, "red", null, "red", null],
-  [null, "empty", null, "empty", null, "empty", null, "empty"],
-  ["empty", null, "empty", null, "empty", null, "empty", null],
-  [null, "black", null, "black", null, "black", null, "black"],
-  ["black", null, "black", null, "black", null, "black", null],
-  [null, "black", null, "black", null, "black", null, "black"]
-];
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // CREATES A NEW GAME
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
