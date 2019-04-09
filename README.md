@@ -102,6 +102,8 @@ Will return
 ]
 ```
 
+Another Example
+
 ```json
 const blackPieceWillCapture = [
     ["red", null, "red", null, "red", null, "red", null],
@@ -163,6 +165,8 @@ Will return
   [null, "black", null, "black", null, "black", null, "black"]
 ]
 ```
+
+Another Example
 
 ```json
 const boardWithPossible = [
