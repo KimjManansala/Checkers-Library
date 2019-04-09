@@ -25,6 +25,7 @@ npm test
 - [`createNewGame()`](#c4createNewGame)
 - [`validBoard()`](#c4validBoard)
 - [`selectPieceToMove()`](#c4selectPieceToMove)
+- [`moveToPossible()`](#c4smoveTopossible)
 - [`checkRedwinner()`](#c4checkRedwinner)
 - [`checkBlackWinner()`](#c4checkBlackWinner)
 - [`checkValidAmount()`](#c4checkValidAmount)
@@ -62,15 +63,15 @@ This method returns a boolean. It will check if the current board is valid
   - `false`
 - If board length is not 8:
   - `false`
-    - `false`
-- If each board row length is not 8:
+- If any board row length is not 8:
   - `false`
 - If all checks pass:
   - `true`
 
-#### <a name='c4selectPieeToMove'></a>`selectPieeToMove()`
+#### <a name='c4selectPieceToMove'></a>`selectPieceToMove()`
 
-This method will return a new board with `possible` places a selected piece can go
+This method will return a new array with `possible` places a selected piece can go.
+The method takes in arguments current board, player turns, either `'black'` or `'red'`, row of piece to move, and column of piece to move
 
 ```json
 const firstMove = [
@@ -82,7 +83,7 @@ const firstMove = [
     [null, "black", null, "black", null, "black", null, "black"],
     ["black", null, "black", null, "black", null, "black", null],
     [null, "black", null, "black", null, "black", null, "black"]
-  ];
+  ]
 selectPieceToMove(firstMove, 'black', 5,1)
 ```
 
@@ -90,6 +91,52 @@ Will return
 
 ```json
 [
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["possible", null, "possible", null, "empty", null, "empty", null],
+  [null, "blackmoving", null, "black", null, "black", null, "black"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+]
+```
+
+```json
+const blackPieceWillCapture = [
+    ["red", null, "red", null, "red", null, "red", null],
+    [null, "red", null, "red", null, "red", null, "red"],
+    ["red", null, "red", null, "empty", null, "red", null],
+    [null, "empty", null, "red", null, "empty", null, "empty"],
+    ["empty", null, "black", null, "empty", null, "black", null],
+    [null, "empty", null, "black", null, "black", null, "empty"],
+    ["black", null, "black", null, "black", null, "black", null],
+    [null, "black", null, "black", null, "black", null, "black"]
+  ]
+selectPieceToMove(blackPieceWillCapture, 'black', 4,2)
+```
+
+Will Return
+
+```json
+[
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "possible", null, "red", null],
+  [null, "possible", null, "red", null, "empty", null, "empty"],
+  ["empty", null, "blackmoving", null, "empty", null, "black", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+]
+```
+
+#### <a name='c4moveToPossible'></a>`moveToPossible()`
+
+This method will return a new array with the moved piece to the `'possible'` location selected. The method takes in arguments current board, row of `'possible'` piece selected, and column of `'possible'` piece selected
+
+```json
+const boardWithPossible = [
     ["red", null, "red", null, "red", null, "red", null],
     [null, "red", null, "red", null, "red", null, "red"],
     ["red", null, "red", null, "red", null, "red", null],
@@ -98,8 +145,52 @@ Will return
     [null, "blackmoving", null, "black", null, "black", null, "black"],
     ["black", null, "black", null, "black", null, "black", null],
     [null, "black", null, "black", null, "black", null, "black"]
-  ];
+  ]
+  moveToPossible(boardWithPossible, 4,0)
+```
 
+Will return
+
+```json
+[
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["black", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "black", null, "black", null, "black"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+]
+```
+
+```json
+const boardWithPossible = [
+    ["red", null, "red", null, "red", null, "red", null],
+    [null, "red", null, "red", null, "red", null, "red"],
+    ["red", null, "red", null, "possible", null, "red", null],
+    [null, "possible", null, "red", null, "empty", null, "empty"],
+    ["empty", null, "blackmoving", null, "empty", null, "black", null],
+    [null, "empty", null, "black", null, "black", null, "empty"],
+    ["black", null, "black", null, "black", null, "black", null],
+    [null, "black", null, "black", null, "black", null, "black"]
+  ]
+  moveToPossible(boardWithPossible, 2,4)
+```
+
+Will return
+
+```json
+[
+  ["red", null, "red", null, "red", null, "red", null],
+  [null, "red", null, "red", null, "red", null, "red"],
+  ["red", null, "red", null, "black", null, "red", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "black", null],
+  [null, "empty", null, "black", null, "black", null, "empty"],
+  ["black", null, "black", null, "black", null, "black", null],
+  [null, "black", null, "black", null, "black", null, "black"]
+]
 ```
 
 ## License
