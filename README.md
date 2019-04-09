@@ -25,7 +25,7 @@ npm test
 - [`createNewGame()`](#c4createNewGame)
 - [`validBoard()`](#c4validBoard)
 - [`selectPieceToMove()`](#c4selectPieceToMove)
-- [`moveToPossible()`](#c4smoveTopossible)
+- [`moveToPossible()`](#c4moveTopossible)
 - [`checkRedwinner()`](#c4checkRedwinner)
 - [`checkBlackWinner()`](#c4checkBlackWinner)
 - [`checkValidAmount()`](#c4checkValidAmount)
@@ -195,6 +195,72 @@ Will return
   ["black", null, "black", null, "black", null, "black", null],
   [null, "black", null, "black", null, "black", null, "black"]
 ]
+```
+
+#### <a name='c4checkRedWinner'></a>`checkRedWinner()`
+
+This method returns a boolean. It will check if red is the winner
+
+```json
+const redWinningBoard=
+    [
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "red", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "redking", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "redking", null, "empty", null, "empty", null, "empty"]
+]
+```
+```json
+
+console.log(checkRedWinner(redWinningBoard)) //true
+```
+
+#### <a name='c4checkBlackWinner'></a>`checkBlackWinner()`
+
+This method returns a boolean. It will check if black is the winner
+
+```json
+const blackWinningBoard=
+    [
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "black", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "blackking", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "blackking"],
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"]
+]
+```
+```json
+
+console.log(checkBlackWinner(blackWinningBoard)) //true
+```
+
+
+#### <a name='c4checkValidAmount'></a>`checkValidAmount()`
+
+This method returns a boolean. It will check if there is no more than 13 of red pieces and black piece
+
+```json
+const normalBoard=
+    [
+  ["redking", null, "black", null, "black", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "blackking", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "empty", null, "empty", null, "empty", null, "empty"],
+  ["empty", null, "empty", null, "empty", null, "empty", null],
+  [null, "red", null, "red", null, "red", null, "empty"]
+]
+```
+```json
+console.log(checkValidAmount(normalBoard)) //true
 ```
 
 ## License
